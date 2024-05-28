@@ -8,11 +8,11 @@ import { fileURLToPath } from "url";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
-app.get("/", (req, res) => {
-  return res.send("hello /");
-});
+// app.get("/", (req, res) => {
+//   return res.send("hello /");
+// });
 
 const corsOptions = {
   origin: "*", // Allow requests from all origins
