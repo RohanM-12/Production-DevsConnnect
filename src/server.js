@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("uploads"));
 app.use("/uploads", serveStatic(path.join(__dirname, "routes", "uploads")));
-app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 import appRoute from "./routes/index.js";
 import prisma from "./db/db.config.js";
