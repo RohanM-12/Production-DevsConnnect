@@ -17,7 +17,9 @@ datasource db {
   created_At DateTime @default(now())
   posts          Posts[]
   contributionRequests ContributionRequests[]
- }
+  chatRooms             ChatRoomMember[]
+  messages              Message[]
+ } 
 
  model Posts {
   id  Int @id @default(autoincrement()) 
@@ -33,9 +35,9 @@ datasource db {
   technologiesUsed String[]
   created_at DateTime @default(now())
   contributionRequests ContributionRequests[] 
+  chatRoom              ChatRoom?
  }
-
- model ContributionRequests {
+model ContributionRequests {
   id Int @id @default(autoincrement())
   requesterId Int 
   postId Int
@@ -44,9 +46,40 @@ datasource db {
   rating Int @default(0)
   wishesToWorkOn String
   created_at DateTime @default(now())
-  requester User @relation(fields: [requesterId],references: [id])
-  post Posts @relation(fields: [postId] , references: [id] , onDelete: Cascade)
-  @@unique([requesterId,postId])
- }
+  requester User @relation(fields: [requesterId], references: [id])
+  post Posts @relation(fields: [postId], references: [id], onDelete: Cascade)
+  chatRoomId Int?  // Add this field to store the ChatRoom reference
+  chatRoom ChatRoom? @relation(fields: [chatRoomId], references: [id])
+  @@unique([requesterId, postId])
+}
 
+model ChatRoom {
+  id Int @id @default(autoincrement())
+  postId Int @unique
+  created_at DateTime @default(now())
+  post Posts @relation(fields: [postId], references: [id])
+  members ChatRoomMember[]
+  messages Message[]
+  contributionRequests ContributionRequests[] // This can stay as it is
+}
+
+model ChatRoomMember {
+  id                    Int                   @id @default(autoincrement())
+  userId                Int
+  chatRoomId            Int
+  joined_at             DateTime              @default(now())
+  user                  User                  @relation(fields: [userId], references: [id])
+  chatRoom              ChatRoom              @relation(fields: [chatRoomId], references: [id])
+  @@unique([userId, chatRoomId])
+}
+
+model Message {
+  id                    Int                   @id @default(autoincrement())
+  chatRoomId            Int
+  senderId              Int
+  content               String
+  sent_at               DateTime              @default(now())
+  chatRoom              ChatRoom              @relation(fields: [chatRoomId], references: [id])
+  sender                User                  @relation(fields: [senderId], references: [id])
+}
  

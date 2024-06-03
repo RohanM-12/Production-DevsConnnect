@@ -8,11 +8,11 @@ import { fileURLToPath } from "url";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-// app.get("/", (req, res) => {
-//   return res.send("hello /");
-// });
+app.get("/", (req, res) => {
+  return res.send("hello /");
+});
 
 const corsOptions = {
   origin: "*", // Allow requests from all origins
@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("uploads"));
 app.use("/uploads", serveStatic(path.join(__dirname, "routes", "uploads")));
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
+app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
 import appRoute from "./routes/index.js";
 import { METHODS } from "http";

@@ -53,10 +53,28 @@ export const updateContributionRequestStatus = async (req, res) => {
         status: status,
       },
     });
+    //add the member to the chat room if status is accepted
+    let chatRoomUserStatus = 500;
+    if (result && status == "Accepted") {
+      const chatRoom = await prisma.chatRoom.findUnique({
+        where: { postId: parseInt(postId) },
+      });
+      console.log("Chatroom data ", chatRoom);
+      const res = await prisma.chatRoomMember.create({
+        data: {
+          userId: requesterId,
+          chatRoomId: chatRoom.id,
+        },
+      });
+      if (res) {
+        chatRoomUserStatus = 200;
+      }
+    }
     return res.json({
       status: 200,
       message: "success",
       data: result,
+      chatRoomUserStatus: chatRoomUserStatus,
     });
   } catch (error) {
     res.json({

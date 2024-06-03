@@ -30,8 +30,9 @@ export const createPost = async (req, res) => {
       },
     });
     if (uploadResult) {
-      return res.json({ status: 200, message: "Post uploaded successfully" });
+      await prisma.chatRoom.create({ data: { postId: uploadResult?.id } });
     }
+    return res.json({ status: 200, message: "Post uploaded successfully" });
   } catch (error) {
     return res.json({
       status: 500,
@@ -231,6 +232,21 @@ export const deletePost = async (req, res) => {
     return res.json({
       status: 500,
       message: "Error deleting post",
+      error: error.message,
+    });
+  }
+};
+
+//Update post Controller
+
+export const updatePost = async (req, res) => {
+  try {
+    console.log("params", req.query);
+    console.log(req.body);
+  } catch (error) {
+    res.json({
+      status: 500,
+      message: "Internal server Error",
       error: error.message,
     });
   }
