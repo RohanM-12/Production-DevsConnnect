@@ -8,11 +8,7 @@ import { fileURLToPath } from "url";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PORT = process.env.PORT || 3000;
-
-app.get("/", (req, res) => {
-  return res.send("hello /");
-});
+const PORT = process.env.PORT || 5000;
 
 const corsOptions = {
   origin: "*", // Allow requests from all origins
@@ -30,7 +26,6 @@ app.use("/uploads", serveStatic(path.join(__dirname, "routes", "uploads")));
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
 import appRoute from "./routes/index.js";
-import { METHODS } from "http";
 import prisma from "./db/db.config.js";
 app.use(appRoute);
 
