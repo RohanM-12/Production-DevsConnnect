@@ -6,10 +6,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js ",
-    "server": "nodemon src/server.js --host 0.0.0.0",
-    "client": "npm run dev --prefix ../frontend",
+    "server": "nodemon server.js --host 0.0.0.0",
+    "client": "npm run dev --prefix ./frontend",
     "dev": " concurrently \" npm run server\" \"npm run client \"",
-    "build": "npm install --prefix ../frontend && npm run build --prefix ../frontend && npm install"
+    "build": "npm install --prefix ./frontend && npm run build --prefix ./frontend && npm install"
   },
   "author": "rohan",
   "license": "ISC",

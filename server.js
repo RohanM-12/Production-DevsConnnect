@@ -3,7 +3,7 @@ import "dotenv/config";
 import chalk from "chalk";
 import cors from "cors";
 import serveStatic from "serve-static";
-import path from "path";
+import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -22,11 +22,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("uploads"));
-app.use("/uploads", serveStatic(path.join(__dirname, "routes", "uploads")));
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
-import appRoute from "./routes/index.js";
-import prisma from "./db/db.config.js";
+app.use(serveStatic(path.join(__dirname, "./src/routes", "uploads")));
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+// app.use(express.static(path.join(__dirname, "../frontend/dist")));
+import appRoute from "./src/routes/index.js";
+import prisma from "./src/db/db.config.js";
 app.use(appRoute);
 
 app.listen(PORT, () =>

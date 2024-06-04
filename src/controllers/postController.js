@@ -1,8 +1,11 @@
 import prisma from "../db/db.config.js";
-
+import fs from "fs";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 export const createPost = async (req, res) => {
   try {
-    console.log("Create post", req.body);
     const {
       Title,
       Description,
@@ -12,11 +15,9 @@ export const createPost = async (req, res) => {
       technologiesUsed,
       userId,
     } = req.body;
-    console.log("FIle", req.file);
-    console.log("array", req.body.technologiesUsed);
 
     const uploadedFile = req.file;
-    const thumbnailImgURL = `/uploads/${uploadedFile.filename}`;
+    const thumbnailImgURL = `/${uploadedFile.filename}`;
     const uploadResult = await prisma.posts.create({
       data: {
         name: Title,
@@ -107,7 +108,7 @@ export const getAllPosts = async (req, res) => {
           },
         },
       });
-      console.log(postsData);
+
       const moddifiedPostData = postsData?.map((post) => ({
         ...post,
         user: post.user.name,
@@ -124,7 +125,7 @@ export const getAllPosts = async (req, res) => {
       orderBy: { created_at: "asc" },
       include: { user: { select: { name: true } } },
     });
-    console.log(postsData);
+
     const moddifiedPostData = postsData?.map((post) => ({
       ...post,
       user: post.user.name,
@@ -220,9 +221,15 @@ export const deletePost = async (req, res) => {
       },
     });
 
+    const databasePath = resultPostDelete.thumbnailImgURL;
+
+    const filePath = path.join(__dirname, "../routes", "uploads", databasePath);
+
     if (!resultPostDelete) {
       return res.json({ status: 401, message: "Post not found to delete" });
     }
+
+    await fs.promises.unlink(filePath);
 
     return res.json({
       status: 200,
@@ -241,8 +248,6 @@ export const deletePost = async (req, res) => {
 
 export const updatePost = async (req, res) => {
   try {
-    console.log("params", req.query);
-    console.log(req.body);
   } catch (error) {
     res.json({
       status: 500,
@@ -254,7 +259,6 @@ export const updatePost = async (req, res) => {
 
 export const likePost = async (req, res) => {
   try {
-    console.log(req.body);
     const userId = req.body.userID.toString();
     const postId = parseInt(req.body.id);
 
@@ -313,9 +317,9 @@ export const removeLikePost = async (req, res) => {
         message: "Post not Found",
       });
     }
-    console.log(postToRemoveLike);
+
     let updatedLikes = postToRemoveLike?.likes?.filter((id) => id !== userID);
-    console.log(updatedLikes);
+
     const updatedPost = await prisma.posts.update({
       where: {
         id: postID,

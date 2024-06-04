@@ -59,7 +59,6 @@ export const updateContributionRequestStatus = async (req, res) => {
       const chatRoom = await prisma.chatRoom.findUnique({
         where: { postId: parseInt(postId) },
       });
-      console.log("Chatroom data ", chatRoom);
       const res = await prisma.chatRoomMember.create({
         data: {
           userId: requesterId,
@@ -115,7 +114,7 @@ export const getContributionRequests = async (req, res) => {
         },
       },
     });
-    console.log(user);
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

@@ -3,8 +3,6 @@ import prisma from "../db/db.config.js";
 export const followUser = async (req, res) => {
   try {
     const { followerId, followingId } = req.body;
-    console.log("Follower:", followerId);
-    console.log("Following:", followingId);
     const result = await prisma.Connections.create({
       data: { followerId: followerId, followingId: followingId },
     });
@@ -25,8 +23,6 @@ export const followUser = async (req, res) => {
 export const unfollowUser = async (req, res) => {
   try {
     const { followerId, followingId } = req.body;
-    console.log("Follower:", followerId);
-    console.log("Following:", followingId);
     const result = await prisma.delete({
       where: {
         followerId: followerId,

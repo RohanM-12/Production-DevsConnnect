@@ -2,7 +2,7 @@ import prisma from "../db/db.config.js";
 export const getChatRoomsList = async (req, res) => {
   try {
     const { userId } = req.query;
-    console.log(userId);
+
     const chatRoomsList = await prisma.chatRoom.findMany({
       where: {
         members: {
@@ -35,7 +35,7 @@ export const getChatRoomsList = async (req, res) => {
         },
       },
     });
-    console.log("chatRoom List", chatRoomsList);
+
     res.json({
       status: 200,
       message: "Success",
@@ -53,7 +53,7 @@ export const getChatRoomsList = async (req, res) => {
 export const sendMessage = async (req, res) => {
   try {
     const { chatRoomId, senderId, content } = req.body;
-    console.log(req.body);
+
     const msgSent = await prisma.message.create({
       data: {
         chatRoomId: parseInt(chatRoomId),
@@ -78,12 +78,10 @@ export const sendMessage = async (req, res) => {
 export const getMessages = async (req, res) => {
   try {
     const { id: chatRoomId } = req.params;
-    const { userId } = req.query;
-    console.log(req.params, req.query);
+
     const messages = await prisma.message.findMany({
       where: {
         chatRoomId: parseInt(chatRoomId),
-        // userId: userId,
       },
       include: {
         sender: {

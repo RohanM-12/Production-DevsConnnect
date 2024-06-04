@@ -59,7 +59,7 @@ export const loginUser = async (req, res) => {
         email: email.toString(),
       },
     });
-    console.log(result);
+
     if (result == null) {
       return res.json({
         status: 400,
@@ -108,7 +108,7 @@ export const loginUser = async (req, res) => {
 
 export const getCollageNames = async (req, res) => {
   const { name } = req.params;
-  console.log(name);
+
   try {
     const response = await fetch(
       `https://api.geeksforgeeks.org/api/institutes/${name}/institute`
