@@ -30,9 +30,9 @@ export const createPost = async (req, res) => {
         userId: parseInt(userId),
       },
     });
-    if (uploadResult) {
+   // if (uploadResult) {
       await prisma.chatRoom.create({ data: { postId: uploadResult?.id } });
-    }
+   // }
     return res.json({ status: 200, message: "Post uploaded successfully" });
   } catch (error) {
     return res.json({
