@@ -1,6 +1,7 @@
 import prisma from "../db/db.config.js";
 import fs from "fs";
 import path, { dirname } from "path";
+import { v2 as cloudinary } from "cloudinary";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,7 +18,14 @@ export const createPost = async (req, res) => {
     } = req.body;
 
     const uploadedFile = req.file;
-    const thumbnailImgURL = `/${uploadedFile.filename}`;
+    // const thumbnailImgURL = `/${uploadedFile.filename}`;
+    let thumbnailImgURL = null;
+    // console.log("file details", req.file);
+    await cloudinary.uploader.upload(uploadedFile.path, (err, result) => {
+      // console.log("result", result);
+      thumbnailImgURL = result?.url;
+    });
+
     const uploadResult = await prisma.posts.create({
       data: {
         name: Title,
@@ -30,9 +38,9 @@ export const createPost = async (req, res) => {
         userId: parseInt(userId),
       },
     });
-   // if (uploadResult) {
-      await prisma.chatRoom.create({ data: { postId: uploadResult?.id } });
-   // }
+    // if (uploadResult) {
+    await prisma.chatRoom.create({ data: { postId: uploadResult?.id } });
+    // }
     return res.json({ status: 200, message: "Post uploaded successfully" });
   } catch (error) {
     return res.json({
@@ -222,7 +230,17 @@ export const deletePost = async (req, res) => {
     });
 
     const databasePath = resultPostDelete.thumbnailImgURL;
-
+    const publicId = resultPostDelete.thumbnailImgURL
+      .split("/")
+      .slice(-1)[0]
+      .split(".")[0];
+    await cloudinary.uploader.destroy(publicId, function (error, result) {
+      if (error) {
+        console.log("Error deleting image:", error);
+      } else {
+        console.log("Image deleted successfully:", result);
+      }
+    });
     const filePath = path.join(__dirname, "../routes", "uploads", databasePath);
 
     if (!resultPostDelete) {

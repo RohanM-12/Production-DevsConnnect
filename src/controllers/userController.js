@@ -59,6 +59,7 @@ export const loginUser = async (req, res) => {
         email: email.toString(),
       },
     });
+    console.log(result);
 
     if (result == null) {
       return res.json({

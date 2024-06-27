@@ -5,6 +5,8 @@ import cors from "cors";
 import serveStatic from "serve-static";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
+import fileUpload from "express-fileupload";
+import { v2 as cloudinary } from "cloudinary";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,6 +20,18 @@ const corsOptions = {
 };
 
 // middleware
+// app.use(
+//   fileUpload({
+//     useTempFiles: true,
+//   })
+// );
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET, // Click 'View Credentials' below to copy your API secret
+});
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
